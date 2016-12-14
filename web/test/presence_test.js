@@ -74,7 +74,7 @@ describe("syncState", () => {
     assert.deepEqual(state, newState)
     assert.deepEqual(joined, {
       u3: {current: {metas: [{id: 3, phx_ref: "3"}]},
-           newPres: {metas: [{id: 3, phx_ref: "3"}, {id: 3, phx_ref: "3.new"}]}}
+           newPres: {metas: [{id: 3, phx_ref: "3.new"}, {id: 3, phx_ref: "3"}]}}
     })
     assert.deepEqual(left, {})
   })
@@ -99,7 +99,7 @@ describe("syncDiff", () => {
     state = Presence.syncDiff(state, {joins: fixtures.joins(), leaves: fixtures.leaves()})
 
     assert.deepEqual(state, {
-      u1: {metas: [{id: 1, phx_ref: "1"}, {id: 1, phx_ref: "1.2"}]},
+      u1: {metas: [{id: 1, phx_ref: "1.2"}, {id: 1, phx_ref: "1"}]},
       u3: {metas: [{id: 3, phx_ref: "3"}]}
     })
   })
@@ -112,6 +112,18 @@ describe("syncDiff", () => {
 
     assert.deepEqual(state, {
       u1: {metas: [{id: 1, phx_ref: "1.2"}]},
+    })
+  })
+
+  it("preserves most-recently-updated meta ordering", () => {
+    let state = {
+      u1: {metas: [{state:"newer"},{state:"older"}]}
+    }
+
+    state = Presence.syncDiff(state, {joins: {u1: {metas: [{state:"newest"}]}}, leaves: {}})
+
+    assert.deepEqual(state, {
+      u1: {metas: [{state: "newest"},{state:"newer"},{state:"older"}]}
     })
   })
 })

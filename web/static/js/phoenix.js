@@ -836,7 +836,7 @@ export var Presence = {
       let currentPresence = state[key]
       state[key] = newPresence
       if(currentPresence){
-        state[key].metas.unshift(...currentPresence.metas)
+        state[key].metas.push(...currentPresence.metas)
       }
       onJoin(key, currentPresence, newPresence)
     })

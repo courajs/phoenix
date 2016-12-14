@@ -17,6 +17,8 @@
   },
   "files": ["README.md", "LICENSE.md", "package.json", "priv/static/phoenix.js", "web/static/js/phoenix.js"],
   "scripts": {
-    "test": "./node_modules/.bin/mocha ./web/test/**/*.js --compilers js:babel-register"
+    "test": "./node_modules/.bin/mocha ./web/test/**/*.js --compilers js:babel-register",
+    "build": "brunch build",
+    "watch": "brunch watch"
   }
 }

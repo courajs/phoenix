@@ -1,13 +1,13 @@
 (function(exports){
 "use strict";
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
@@ -212,7 +212,6 @@ var Push = function () {
   // payload - The payload, for example `{user_id: 123}`
   // timeout - The push timeout in milliseconds
   //
-
   function Push(channel, event, payload, timeout) {
     _classCallCheck(this, Push);
 
@@ -393,7 +392,7 @@ var Channel = exports.Channel = function () {
   }, {
     key: "join",
     value: function join() {
-      var timeout = arguments.length <= 0 || arguments[0] === undefined ? this.timeout : arguments[0];
+      var timeout = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.timeout;
 
       if (this.joinedOnce) {
         throw "tried to join multiple times. 'join' can only be called a single time per channel instance";
@@ -435,7 +434,7 @@ var Channel = exports.Channel = function () {
   }, {
     key: "push",
     value: function push(event, payload) {
-      var timeout = arguments.length <= 2 || arguments[2] === undefined ? this.timeout : arguments[2];
+      var timeout = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : this.timeout;
 
       if (!this.joinedOnce) {
         throw "tried to push '" + event + "' to '" + this.topic + "' before joining. Use channel.join() before pushing events";
@@ -469,7 +468,7 @@ var Channel = exports.Channel = function () {
     value: function leave() {
       var _this3 = this;
 
-      var timeout = arguments.length <= 0 || arguments[0] === undefined ? this.timeout : arguments[0];
+      var timeout = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.timeout;
 
       this.state = CHANNEL_STATES.leaving;
       var onClose = function onClose() {
@@ -524,7 +523,7 @@ var Channel = exports.Channel = function () {
   }, {
     key: "rejoin",
     value: function rejoin() {
-      var timeout = arguments.length <= 0 || arguments[0] === undefined ? this.timeout : arguments[0];
+      var timeout = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.timeout;
       if (this.isLeaving()) {
         return;
       }
@@ -617,11 +616,10 @@ var Socket = exports.Socket = function () {
   //
   // For IE8 support use an ES5-shim (https://github.com/es-shims/es5-shim)
   //
-
   function Socket(endPoint) {
     var _this4 = this;
 
-    var opts = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+    var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
     _classCallCheck(this, Socket);
 
@@ -819,7 +817,7 @@ var Socket = exports.Socket = function () {
   }, {
     key: "channel",
     value: function channel(topic) {
-      var chanParams = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+      var chanParams = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
       var chan = new Channel(topic, chanParams, this);
       this.channels.push(chan);
@@ -1021,9 +1019,9 @@ var Ajax = exports.Ajax = function () {
         var req = new XDomainRequest(); // IE8, IE9
         this.xdomainRequest(req, method, endPoint, body, timeout, ontimeout, callback);
       } else {
-        var req = window.XMLHttpRequest ? new XMLHttpRequest() : // IE7+, Firefox, Chrome, Opera, Safari
+        var _req = window.XMLHttpRequest ? new XMLHttpRequest() : // IE7+, Firefox, Chrome, Opera, Safari
         new ActiveXObject("Microsoft.XMLHTTP"); // IE6, IE5
-        this.xhrRequest(req, method, endPoint, accept, body, timeout, ontimeout, callback);
+        this.xhrRequest(_req, method, endPoint, accept, body, timeout, ontimeout, callback);
       }
     }
   }, {
@@ -1204,6 +1202,7 @@ var Presence = exports.Presence = {
       return chooser(key, presence);
     });
   },
+
 
   // private
 
